@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "1fca40ca-d21c-4c07-8124-b46d4412e6bc",
+		"name": "The_wallet_creation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "create wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "811eef77-8a3c-4e68-bce3-433d07000730",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Contents wallet_id\", function () {\r",
+							"    pm.expect(responseJson).to.have.property('wallet_id');\r",
+							"});\r",
+							"\r",
+							"const responseJsonWalletId = pm.response.json().wallet_id;\r",
+							"\r",
+							"pm.test(\"Contents currency name BTC\", function () {\r",
+							"    pm.expect(responseJsonWalletId).to.include('BTC');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"wallet_id length is 53\", function () {\r",
+							"    pm.expect(responseJsonWalletId).to.have.lengthOf(53);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"wallet_id\", responseJson.wallet_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/create/wallet",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"create",
+						"wallet"
+					]
+				},
+				"description": "Создаем наш кошелек"
+			},
+			"response": []
+		},
+		{
+			"name": "create wallet payment adress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b4275931-b237-49fc-87b9-5681cb82065e",
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"wallet_address\", responseJson.address);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"wallet_id\": \"{{wallet_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/create/wallet/payment/address",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"create",
+						"wallet",
+						"payment",
+						"address"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Создаем адрес для нашего кошелька"
+			},
+			"response": []
+		},
+		{
+			"name": "wallet state",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "60bf76cf-8bc8-4e4e-81b2-99a4d7c0777e",
+						"exec": [
+							"console.info(pm.environment.get(\"wallet_id\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/wallet/state/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"state",
+						"{{wallet_id}}"
+					]
+				},
+				"description": "Состояние первого кошелька"
+			},
+			"response": []
+		},
+		{
+			"name": "create recipient wallet to send a payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c8a3099-2c0f-42d8-834d-7aca28570e8d",
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"wallet_id_rec\", responseJson.wallet_id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/create/wallet",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"create",
+						"wallet"
+					]
+				},
+				"description": "Создаем кошелек реципиента, чтобы отправить на него средства с первого кошелька"
+			},
+			"response": []
+		},
+		{
+			"name": "create recipient payment adress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ba7da9b0-e4db-4942-984e-f49f63eec23a",
+						"exec": [
+							"const responseJson = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"wallet_address_rec\", responseJson.address);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"wallet_id\": \"{{wallet_id_rec}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/create/wallet/payment/address",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"create",
+						"wallet",
+						"payment",
+						"address"
+					]
+				},
+				"description": "Создаем адрес для кошелька реципиента"
+			},
+			"response": []
+		},
+		{
+			"name": "send payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "19c3d595-92e6-4331-a239-27139cbbca61",
+						"exec": [
+							"pm.test(\"Status code is 403 forbiden\", function () {\r",
+							"    pm.response.to.be.forbidden; \r",
+							"});\r",
+							"\r",
+							"pm.test(\"No funds\", function () {\r",
+							"    pm.expect(pm.response.json().message).to.include('not enough funds'); \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"receivers_list\": [\r\n        {\r\n            \"address\": \"2MvPGJYVcEksyNkGJxwLEWbvGFTQt1RbLut\",\r\n            \"amount\": 10000\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/wallet/send/payment/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"send",
+						"payment",
+						"{{wallet_id}}"
+					]
+				},
+				"description": "Пробуем сделать транзакцию, но средств на кошельке, к сожалению, нет"
+			},
+			"response": []
+		},
+		{
+			"name": "wallet adress list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3a2568be-acce-4a6b-b0bc-62f358860aae",
+						"exec": [
+							"pm.test(\"We've got an address list\", function () {\r",
+							"    pm.response.to.have.jsonBody(\"address_list\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"First object's address field type is 'string'\", function () {\r",
+							"    pm.expect(pm.response.json().address_list[0].address).to.be.a('string');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/wallet/addresses/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"addresses",
+						"{{wallet_id}}"
+					]
+				},
+				"description": "Список адресов первого кошелька"
+			},
+			"response": []
+		},
+		{
+			"name": "wallet daily statistics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c6ae031-97a2-4ea6-8952-20e55f24991a",
+						"exec": [
+							"pm.test(\"Received amount equals one of 3 predefined values\", () => {\r",
+							"  pm.expect(pm.response.json().day_list[0].received_amount).to.be.oneOf([0, 100, -1000]);\r",
+							"});\r",
+							"\r",
+							"const dEbetcrEdit = pm.response.json().day_list[0].received_amount - pm.response.json().day_list[0].sent_amount;\r",
+							"\r",
+							"pm.test(\"Expect to svesti buhgalterskiy balans\", () => {\r",
+							"  pm.expect(pm.response.json().day_list[0].balance_amount).to.eql(dEbetcrEdit);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/wallet/daily/statistic/{{wallet_id}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"wallet",
+						"daily",
+						"statistic",
+						"{{wallet_id}}"
+					]
+				},
+				"description": "Статистика по первому кошельку"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
